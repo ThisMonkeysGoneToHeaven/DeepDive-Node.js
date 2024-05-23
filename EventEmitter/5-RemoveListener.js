@@ -18,7 +18,13 @@ console.log(myEmitter.eventNames());
 myEmitter.removeAllListeners("bar");
 console.log(myEmitter.eventNames());
 
-// myEmitter.removeListeners(eventName, listener) will remove just that listener which is passed as an arugment, and even if multiple combinations of (eventName, listener) are added, only one will be removed for each call
+/*
+myEmitter.removeListeners(eventName, listener) will remove just that listener which is passed as an arugment
+
+Even if multiple combinations of (eventName, listener) are added, only one will be removed for each call
+
+Also, once emit(event) has been called for a particular event, all the listeners registered for that event will be executed even if one of the listeners include removeListeners(event, function). Only after all the listeners for that event have been called, the internal_array will become equal to the new_array_after_remove_listener_calls. 
+*/
 
 console.log(myEmitter.listeners("foo"));
 // can use removeListeners instead of 'off' as well, both do the same thing
