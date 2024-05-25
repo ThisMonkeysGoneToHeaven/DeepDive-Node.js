@@ -16,7 +16,4 @@ console.log(memoryContainer, memoryContainer.toString("utf-8"));
 UNRESOLVED DOUBT
 
 // trying to allocate the buffer but without all the manual calcs
-
-const memoryContainer2 = new Buffer.from(encodedData, "binary");
-console.log(memoryContainer2, memoryContainer2.toString("utf-8"));
 */
