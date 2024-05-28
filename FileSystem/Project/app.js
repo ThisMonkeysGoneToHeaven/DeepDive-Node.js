@@ -49,27 +49,24 @@ function usingCallbacks() {
 // usingCallbacks();
 
 async function usingPromises() {
+  const commandFileHandle = await fs_promises.open("./command.txt", "r");
+  commandFileHandle.on("change", async () => {
+    const dataSize = (await commandFileHandle.stat()).size;
+
+    const buffer = Buffer.alloc(dataSize); // using stat here
+    const offset = 0; // buffer's starting position to write data to
+    const length = buffer.byteLength; // how many bytes we want to read from the buffer
+    const position = 0; // where to begin reading from in the file
+
+    await commandFileHandle.read(buffer, offset, length, position);
+
+    console.log(buffer.toString("utf-8"));
+  });
+
   const watcher = fs_promises.watch("./command.txt");
   for await (const event of watcher) {
     if (event.eventType === "change") {
-      console.log("The file was changed ...");
-
-      const commandFileHandle = await fs_promises.open("./command.txt", "r");
-      const dataSize = (await commandFileHandle.stat()).size;
-
-      const buffer = Buffer.alloc(dataSize); // using stat here
-      const offset = 0; // buffer's starting position to write data to
-      const length = buffer.byteLength;
-      const position = 0; // where to begin reading from in the file
-
-      const fileContent = await commandFileHandle.read(
-        buffer,
-        offset,
-        length,
-        position
-      );
-
-      console.log(fileContent);
+      commandFileHandle.emit("change");
     }
   }
 }
