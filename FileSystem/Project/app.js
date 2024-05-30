@@ -1,55 +1,52 @@
-const fs_promises = require("fs/promises");
-const fs = require("fs");
+const fs = require("fs/promises");
 
-/*
-Callbacks are not pretty.
-*/
+(async () => {
+  // commands
+  const CREATE_FILE = "create a file";
+  const DELETE_FILE = "delete the file";
+  const RENAME_FILE = "rename the file";
+  const ADD_TO_FILE = "add to file";
 
-function usingCallbacks() {
-  fs.watch("./command.txt", (eventType, fileName) => {
-    if (eventType === "change") {
-      console.log("The file was changed ...");
-
-      fs.open("./command.txt", "r", (err, fd) => {
-        if (err) throw err;
-
-        fs.fstat(fd, (err, stat) => {
-          if (err) {
-            fs.close(fd);
-            throw err;
-          }
-
-          const buffer = Buffer.alloc(stat.size); // using stat here
-          const offset = 0; // buffer's starting position to write data to
-          const length = buffer.byteLength;
-          const position = 0; // where to begin reading from in the file
-
-          fs.read(
-            fd,
-            buffer,
-            offset,
-            length,
-            position,
-            (err, bytesRead, buffer) => {
-              if (err) {
-                fs.close(fd);
-                throw err;
-              }
-              console.log(buffer); // data successfully printed
-            }
-          );
-
-          fs.close(fd);
-        });
-      });
+  // createFile helper function
+  const createFile = async (path) => {
+    try {
+      // we want to check if we already have that file or not
+      const existingFileHandle = await fs.open(path, "r");
+      existingFileHandle.close();
+      // we already have that file
+      return console.log(`The file ${path} already exists`);
+    } catch (error) {
+      // we don't have the file, now we should create it
+      const newFileHandle = await fs.open(path, "w");
+      console.log("A new file was successfully created!");
+      newFileHandle.close();
     }
-  });
-}
+  };
 
-// usingCallbacks();
+  // deleteFile helper function
+  const deleteFile = async (path) => {
+    // the file must be present in the first place, to be deleted
+    try {
+      const existingFileHandle = await fs.open(path, "r");
+      await fs.unlink(path);
+      existingFileHandle.close();
+      console.log(`The file at ${path} is successfully deleted!`);
+    } catch (error) {
+      return console.log(`File at ${path} not found!`);
+    }
+  };
 
-async function usingPromises() {
-  const commandFileHandle = await fs_promises.open("./command.txt", "r");
+  // renameFile helper function
+  const renameFile = async (oldPath, newPath) => {
+    console.log(`renaming ${oldPath} to ${newPath} `);
+  };
+
+  // addToFile helper function
+  const addToFile = async (path, content) => {
+    console.log(`adding ${content} to ${path} `);
+  };
+
+  const commandFileHandle = await fs.open("./command.txt", "r");
   commandFileHandle.on("change", async () => {
     const dataSize = (await commandFileHandle.stat()).size;
 
@@ -60,15 +57,41 @@ async function usingPromises() {
 
     await commandFileHandle.read(buffer, offset, length, position);
 
-    console.log(buffer.toString("utf-8"));
+    const command = buffer.toString("utf-8");
+
+    // create a file <path>
+    if (command.includes(CREATE_FILE)) {
+      const filePath = command.substring(CREATE_FILE.length + 1);
+      await createFile(filePath);
+    }
+
+    // delete a file <path>
+    if (command.includes(DELETE_FILE)) {
+      const filePath = command.substring(DELETE_FILE.length + 1);
+      await deleteFile(filePath);
+    }
+
+    // rename a file <oldPath> to <newPath>
+    if (command.includes(RENAME_FILE)) {
+      const _idx = command.indexOf(" to ");
+      const oldPath = command.substring(RENAME_FILE.length + 1, _idx);
+      const newPath = command.substring(_idx + 4);
+      await renameFile(oldPath, newPath);
+    }
+
+    // add to the file <path> this content: <content>
+    if (command.includes(ADD_TO_FILE)) {
+      const _idx = command.indexOf(" this content: ");
+      const filePath = command.substring(ADD_TO_FILE.length + 1, _idx);
+      const content = command.substring(_idx + 15);
+      await addToFile(filePath, content);
+    }
   });
 
-  const watcher = fs_promises.watch("./command.txt");
+  const watcher = fs.watch("./command.txt");
   for await (const event of watcher) {
     if (event.eventType === "change") {
       commandFileHandle.emit("change");
     }
   }
-}
-
-usingPromises();
+})();
