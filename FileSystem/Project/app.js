@@ -62,7 +62,7 @@ const fs = require("fs/promises");
       await fs.stat(path);
       // if an error not thrown till now, means file def exists
       const existingFileHandle = await fs.open(path, "a");
-      await existingFileHandle.writeFile(content);
+      await existingFileHandle.write(content);
       existingFileHandle.close();
       console.log(`Content successfully added to the file ${path}`);
     } catch (error) {
