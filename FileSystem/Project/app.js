@@ -32,18 +32,38 @@ const fs = require("fs/promises");
       existingFileHandle.close();
       console.log(`The file at ${path} is successfully deleted!`);
     } catch (error) {
-      return console.log(`File at ${path} not found!`);
+      return console.log(`Cannot Delete: The file at ${path} not found!`);
     }
   };
 
   // renameFile helper function
   const renameFile = async (oldPath, newPath) => {
-    console.log(`renaming ${oldPath} to ${newPath} `);
+    // the file must be present in the first place, to be renamed
+    try {
+      const existingFileHandle = await fs.open(oldPath, "r");
+      // if an error not thrown till now, means file def exists
+      await fs.rename(oldPath, newPath);
+      existingFileHandle.close();
+      console.log(
+        `The file at ${oldPath} is successfully renamed to ${newPath}`
+      );
+    } catch (error) {
+      return console.log(`Cannot Rename: The file ${oldPath} not found!`);
+    }
   };
 
   // addToFile helper function
   const addToFile = async (path, content) => {
-    console.log(`adding ${content} to ${path} `);
+    try {
+      await fs.stat(path);
+      // if an error not thrown till now, means file def exists
+      const existingFileHandle = await fs.open(path, "a");
+      await existingFileHandle.writeFile(content);
+      existingFileHandle.close();
+      console.log(`Content successfully added to the file ${path}`);
+    } catch (error) {
+      return console.log(`Cannot add to File: The file ${path} not found!`);
+    }
   };
 
   const commandFileHandle = await fs.open("./command.txt", "r");

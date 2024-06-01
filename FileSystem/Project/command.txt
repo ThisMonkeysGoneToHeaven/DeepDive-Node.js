@@ -1,1 +1,1 @@
-delete the file temp.js
+add to file temp.js this content: content lelo bhai
