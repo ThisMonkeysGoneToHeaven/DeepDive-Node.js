@@ -25,14 +25,18 @@ const fs = require("fs/promises");
 
   // deleteFile helper function
   const deleteFile = async (path) => {
-    // the file must be present in the first place, to be deleted
     try {
-      const existingFileHandle = await fs.open(path, "r");
       await fs.unlink(path);
-      existingFileHandle.close();
-      console.log(`The file at ${path} is successfully deleted!`);
+      console.log(`The file ${path} is successfully deleted!`);
     } catch (error) {
-      return console.log(`Cannot Delete: The file at ${path} not found!`);
+      if (error.code === "ENOENT")
+        console.log(`Cannot Delete: The file at ${path} not found!`);
+      else {
+        console.error(
+          `An error occured while trying to delete the file: `,
+          error
+        );
+      }
     }
   };
 
