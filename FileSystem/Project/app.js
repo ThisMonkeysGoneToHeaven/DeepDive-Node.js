@@ -42,17 +42,17 @@ const fs = require("fs/promises");
 
   // renameFile helper function
   const renameFile = async (oldPath, newPath) => {
-    // the file must be present in the first place, to be renamed
     try {
-      const existingFileHandle = await fs.open(oldPath, "r");
-      // if an error not thrown till now, means file def exists
       await fs.rename(oldPath, newPath);
-      existingFileHandle.close();
       console.log(
         `The file at ${oldPath} is successfully renamed to ${newPath}`
       );
     } catch (error) {
-      return console.log(`Cannot Rename: The file ${oldPath} not found!`);
+      if (error.code === "ENOENT")
+        console.log(
+          `Cannot Rename: The file ${oldPath} not found or the destination doesn't exist!`
+        );
+      else console.error(`An error occured while renaming the file: `, error);
     }
   };
 
