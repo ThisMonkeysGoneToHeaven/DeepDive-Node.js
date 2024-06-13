@@ -34,7 +34,7 @@ dumb-implementation: 1:15.991 (m:ss.mmm)
 
 */
 
-function attempt_2() {
+function attempt_dumb_implementation() {
   console.time("dumb-implementation");
 
   for (let i = 1; i <= 1e5; i++) {
@@ -46,19 +46,67 @@ function attempt_2() {
   console.timeEnd("dumb-implementation");
 }
 
-// attempt_2();
+// attempt_dumb_implementation();
 
 /*
 Well the following code is Joseph's solution to this challenge and it works surprisingly well, compared to mine. I'll be frank I don't understand why that's the case. This code successfully wrote numbers from 1 to 1e6 within 20.639s.
+
+Execution Time: ~20s
+CPU Usage: ~100% i.e. one-core
+Memory Usage: ~50MB
  */
 
-async function attempt_3() {
-  console.time("write-many");
+async function attempt_using_promises() {
+  console.time("write-many-promises");
   const fileHandle = await fs_promises.open("./test.txt", "w");
   for (let i = 1; i <= 1e6; i++) {
     await fileHandle.write(` ${i} `);
   }
-  console.timeEnd("write-many");
+  console.timeEnd("write-many-promises");
 }
 
-// attempt_3();
+// attempt_using_promises();
+
+/*
+Node.js docs mention that Callback Implementations in FS module are a touch faster than the promises implementations, so giving this a shot.
+
+Execution Time: ~0.250ms
+CPU Usage: --
+Memory Usage: --
+*/
+
+async function attempt_using_callbacks() {
+  console.time("write-many-callback");
+  fs.open("./test.txt", "w", (err, fd) => {
+    for (let i = 1; i <= 1e6; i++) {
+      fs.writeSync(fd, ` ${i} `);
+    }
+  });
+  console.timeEnd("write-many-callback");
+}
+
+// attempt_using_callbacks();
+
+/*
+Using Streams NAIVELY
+
+Execution Time: ~350ms
+CPU Usage: --
+Memory Usage: --
+
+*/
+
+async function attempt_using_streams_naively() {
+  console.time("write-many-streams");
+
+  const fileHandle = await fs_promises.open("./test.txt", "w");
+  const stream = fileHandle.createWriteStream();
+
+  for (let i = 1; i <= 1e6; i++) {
+    const buff = Buffer.from(` ${i} `, "utf-8");
+    stream.write(buff);
+  }
+  console.timeEnd("write-many-streams");
+}
+
+attempt_using_streams_naively();
