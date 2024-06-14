@@ -15,9 +15,9 @@ Execution Time: ~5.5ms (if you bring the console.timeEnd('fix-memory-issue') out
     for (; i <= 1e6; i++) {
       const buff = Buffer.from(` ${i} `);
 
-      //   if (i === 1e6) {
-      //     return stream.end(buff);
-      //   }
+      if (i === 1e6) {
+        return stream.end(buff);
+      }
 
       if (!stream.write(buff)) {
         break;
@@ -27,11 +27,12 @@ Execution Time: ~5.5ms (if you bring the console.timeEnd('fix-memory-issue') out
 
   writeMany();
 
-  // drain even is emmitted after the stream's internal buffer is refreshed
+  // 'drain' even is emmitted after the stream's internal buffer is refreshed
   stream.on("drain", () => {
     writeMany();
   });
 
+  // 'finish' event is emmitted after the very last write is done on the stream via stream.end(buff)
   stream.on("finish", () => {
     console.timeEnd("fix-memory-issue");
     fileHandle.close();
