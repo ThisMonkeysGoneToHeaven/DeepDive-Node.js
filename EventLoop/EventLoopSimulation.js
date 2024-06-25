@@ -1,15 +1,15 @@
 /*
-This file is a representation of what happens when a Node.js process is started i.e. when say, a file called 'myFile.js' is run using node. The code inside isn't meant to be correct executable code but rather just pseudocode.
+This file is a representation of what happens when a Node.js process is started i.e. when say, a file called 'myFile.js' is run using node. The code inside isn't meant to be correct executable code but rather just a pseudocode representation of what happens.
 */
 
 // myFile.js execution STARTS
 
 const pendingTimers = [];
 const pendingOSTasks = [];
-const pendingLongOps = [];
+const pendingLongOps = []; // any functions utilisng libuv's ThreadPool
 
 // New timers, tasks, operations are recorded from myFile running
-myFile.executeCode(); // the code inside the file is ran
+myFile.executeCode(); // the code inside the file is run
 
 function shouldContinue() {
   // Check one: Any pending setTimeout, setInterval, setImmediate?
@@ -32,7 +32,7 @@ while (shouldContinue()) {
 
     Step 4 - Look at pendingTimers[] for any setImmediate() and call them
 
-    Step 5 - Handle any 'close' events. It calls any EventEmitters setup with 'close' event and call them. This is generally used to run any 'clean up code' like closing an opened file e.t.c.
+    Step 5 - Handle any 'close' events. It calls any EventEmitters setup with 'close' event and call them. This is generally used to run any 'clean up code' like closing an opened file etc.
   */
 }
 
