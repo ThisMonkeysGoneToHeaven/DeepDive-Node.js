@@ -5,7 +5,7 @@ This file is a representation of what happens when a Node.js process is started 
 // myFile.js execution STARTS
 
 const pendingTimers = [];
-const pendingOSTasks = [];
+const pendingOSTasks = []; // any network requests
 const pendingLongOps = []; // any functions utilisng libuv's ThreadPool
 
 // New timers, tasks, operations are recorded from myFile running
