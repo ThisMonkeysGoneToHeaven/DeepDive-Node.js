@@ -1,3 +1,6 @@
+node_modules/
+package-lock.json
+
 copied-promise.txt
 copied-callback.txt
 copied-sync.txt
