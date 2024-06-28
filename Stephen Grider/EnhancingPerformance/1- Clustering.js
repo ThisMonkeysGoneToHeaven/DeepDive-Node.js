@@ -27,7 +27,7 @@ if (cluster.isMaster) {
       res.send("Hi There!");
     }, 5000);
 
-    console.log(`Request handled by ${process.pid}`);
+    console.log(`Request handled by worker: ${process.pid}`);
   });
 
   app.get("/fast", (req, res) => {
