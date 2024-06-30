@@ -6,7 +6,7 @@ const fs = require("fs");
 const fs_promises = require("fs/promises");
 
 /*
-Right, now I see what you're onto Joseph. I can't do the following because it just re-writes the i-th number in the file during each iteration, that's stupid.
+Right, now I see what you're onto Joseph. I can't do the following because it just RE-WRITES the i-th number in the file during each iteration, that's stupid.
 */
 
 function attempt_1() {
@@ -109,4 +109,4 @@ async function attempt_using_streams_naively() {
   console.timeEnd("write-many-streams");
 }
 
-attempt_using_streams_naively();
+// attempt_using_streams_naively();

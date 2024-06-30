@@ -29,7 +29,7 @@ const fs = require("fs/promises");
   );
 
   stream.on("drain", () => {
-    // stream is going to emit this 'drain' event after emptying the stream after is becomes full
+    // stream is going to emit this 'drain' event after it's able to take more data
     console.log("We are now safe to write more!");
   });
 
