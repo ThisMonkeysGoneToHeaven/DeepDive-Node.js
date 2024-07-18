@@ -1,4 +1,5 @@
-const { spawn, exec } = require("node:child_process");
+// change this syntax based on node version being used [node:child_process]
+const { spawn, exec } = require("child_process");
 
 // the first argument of the spawn method is always a name of a UNIX executable file that is in the PATH, if the UNIX executable file is not in the PATH then mention the full path of the executable file
 // NOTE that spawn doesn't really care about alias and functions
