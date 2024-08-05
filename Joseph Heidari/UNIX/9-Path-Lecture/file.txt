@@ -1,0 +1,1 @@
+This is some string in the text file.
