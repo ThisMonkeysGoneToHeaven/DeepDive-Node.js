@@ -9,7 +9,7 @@ require("./file.js");
 // Also logging the cwd value which will go as the reference to the below relative path
 console.log(`Node's app.js process's CWD -> ${process.cwd()}`);
 
-const content = fs.readFileSync("./text.txt", "utf-8");
+const content = fs.readFileSync("./file.txt", "utf-8");
 console.log("logging the content from the text file: ", content);
 
 /*
