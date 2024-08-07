@@ -43,7 +43,7 @@ async function createReadStream_2(){
     **/
 
     readStream.on("data", (chunk) => {
-        if(!writeStream.write(data)){
+        if(!writeStream.write(chunk)){
             readStream.pause();
         }
     });
